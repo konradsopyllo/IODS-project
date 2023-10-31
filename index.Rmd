@@ -11,6 +11,7 @@ output:
     fig_height: 4
 ---
 
+
 ***
 
 # Introduction to Open Data Science - Course Project
