@@ -3,7 +3,7 @@
 
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you should use R Markdown syntax.*
 
-To be fair I'm not a huge fan of statistics and computer sciences. Im working as a doctor and doing my PhD on the side. I did one of such courses more than two years ago and i have forgotten most of it by now. There aren't many courses available to be done fully remotely. Thus I'm happy to have found this one in Sisu. I hope to refresh what I have already done in the past and to learn some new skills that will enable me to analyze data for my research. 
+To be fair I'm not a huge fan of statistics and computer sciences. I'm working as a doctor and doing my PhD on the side. I did one of such courses more than two years ago and i have forgotten most of it by now. There aren't many courses available to be done fully remotely. Thus I'm happy to have found this one on Sisu. I hope to refresh what I have already done in the past and to learn some new skills that will enable me to analyze data for my research. 
 
 The exercise set was a good way to start getting familiar with the course content and checking weather everything is working as it should. The most difficult part for me is organizing big sets of data with different variables as in last section of the exercise. The book gives a insight to the basic commands in Rstudio. Nowadays it is also very easy to find support simply by googling the issue. So far I liked the instructions on the Moodle platform. Everything seem to be working fine so far. 
 Looking forward to the real tasks. 
