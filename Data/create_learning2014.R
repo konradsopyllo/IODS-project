@@ -147,4 +147,17 @@ plot(my_model2, which = 5)
 #Multiple explanatory variables all in one
 plot(my_model2, which = c(1, 2, 5))
 
+#Making predictions
+
+m <- lm(Points ~ Attitude, data = analysis_dataset)
+summary(m)
+#New observations
+new_attitudes <- c("Mia" = 3.8, "Mike"= 4.4, "Riikka" = 2.2, "Pekka" = 2.9)
+new_data <- data.frame(Attitude = new_attitudes)
+print(new_data)
+
+#Predictions
+predictions <- predict(m, newdata = new_data)
+print(predictions)
+
 
