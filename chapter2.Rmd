@@ -3,9 +3,7 @@ output:
   html_document: default
   pdf_document: default
 ---
-# Insert chapter 2 title here
-
-*Describe the work you have done this week and summarize your learning.*
+# Assignment 2
 
 - Describe your work and results clearly. 
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
@@ -13,9 +11,11 @@ output:
 
 #Konrad Sopyllo
 
-###Data wrangling
+The data presented below is based on a survey and the data was collected 3.12.2014 - 10.1.2015 in Florence,Italy. The data was translated in Finnish by Kimmo Vehkalahti and Liisa Myyry. The survey was based originally on a finnish study concerning the progress and satisfaction related to the double phased study programme in technical universities. 
 
-#In this Data wrangling part we will focus brielfy on creating the data set as in the csv-file in the data-folder. 
+#Data wrangling
+
+#In this data wrangling part we will focus brielfy on creating the data set as in the csv-file in the data-folder. 
 
 ```{r}
 
@@ -26,14 +26,27 @@ data=read_tsv(url)
 
 ```
 
-#Creating an analysis_dataset with the variables gender, age, attitude, deep, stra, surf and points 
-#by combining questions in the learning2014 data.
+#Creating an analysis_dataset with the variables gender, age, attitude, deep, stra, surf and points by combining the values in the learning2014 data. Note that Stra, surf and deep consist of multiple variables.
 
 ```{r}
 collumns <- c("gender", "Age", "Attitude", "Points")
 
 analysis_dataset <- data[collumns]
 ```
+
+Other variables explained:
+
+d_sm     Seeking Meaning          
+d_ri     Relating Ideas           
+d_ue     Use of Evidence          
+su_lp    Lack of Purpose           
+su_um    Unrelated Memorising     
+su_sb    Syllabus-boundness        
+st_os    Organized Studying        
+st_tm    Time Management          
+Deep     Deep approach           
+Surf     Surface approach          
+Stra     Strategic approach        
 
 #Stra =  st_os+st_tm = ST01+ST09+ST17+ST25+ST04+ST12+ST20+ST28
 ```{r}
@@ -51,7 +64,7 @@ deep_collumns = unlist(str_split(c("D03+D11+D19+D27+D07+D14+D22+D30+D06+D15+D23+
 ```
 
 
-# creating scaled variables using rowMeans-function.
+# Adding stra, deep and surf by creating scaled variables using rowMeans-function. 
 ```{r}
 analysis_dataset["stra"] = rowMeans(select(data, one_of(stra_collumns)))
 analysis_dataset["deep"] = rowMeans(select(data, one_of(deep_collumns)))
@@ -66,7 +79,7 @@ dim(analysis_dataset)
 
 ```
 
-#as in the exercise provided the file has 166 observations and 7 variables
+#As in the exercise provided the file has 166 observations and 7 variables
 
 #Saving the analysis_dataset as a csv-file
 ```{r}
@@ -86,9 +99,9 @@ head(loaded_data)
 
 ###Data analysis
 
-The data presented is based on a survey and the data was collected 3.12.2014 - 10.1.2015 in Florence,Italy. The data was translated in Finnish by Kimmo Vehkalahti and Liisa Myyry. The survey was based originally on a finnish study concerning the progress and satisfaction related to the double phased study programme in technical universities. 
+In this section we will focus further on analysing the data itself. The brief description of the contents of the data have been presented in the beginning of the file. 
 
-#correlation matrix
+#Creating the correlation matrix
 
 ```{r}
 
@@ -206,7 +219,7 @@ summary(model)
 ```
 #p-value being third lowest in this comparison.
 
-#multiple variable model
+#Creating a multiple variable model 
 ```{r}
 
 library(GGally)
@@ -214,7 +227,6 @@ library(ggplot2)
 ggpairs(analysis_dataset, lower = list(combo = wrap("facethist", bins = 20)))
 my_model2 <- lm(Points ~ Attitude + stra, data = analysis_dataset)
 summary(my_model2)
-
 
 my_model2 <- lm(Points ~ Attitude + stra, data = analysis_dataset)
 ```
@@ -241,6 +253,7 @@ plot(my_model2, which = 5)
 ```{r}
 plot(my_model2, which = c(1, 2, 5))
 ```
+In the Residual vs Fitted plot the points are fairly randomly scattered and follow the line. It suggest the assumption is reasonable. In the QQ plot there is some deviation from the norm indicating departure from normality. Residuals vs Leverage on the other hand shows a uneven distribution suggesting heteroscedasticity.
 
 #Making predictions
 
@@ -248,11 +261,14 @@ plot(my_model2, which = c(1, 2, 5))
 m <- lm(Points ~ Attitude, data = analysis_dataset)
 summary(m)
 ```
+As we can se above the Adjusted R-squared is  0.1856. This is not a sign of a good model.
+
 #New observations
 ```{r}
 new_attitudes <- c("Mia" = 3.8, "Mike"= 4.4, "Riikka" = 2.2, "Pekka" = 2.9)
 new_data <- data.frame(Attitude = new_attitudes)
 print(new_data)
+
 ```
 
 ##Predictions
@@ -260,13 +276,6 @@ print(new_data)
 predictions <- predict(m, newdata = new_data)
 print(predictions)
 ```
-
-#following the liner model the predicted values are Adjusted R-squared:  0.09939. This means the model doens not quite well predict the values.
-
-
-
-
-
 
 ```
 
