@@ -16,7 +16,7 @@ data=read_tsv(url)
 view(data)
 
 #Creating an analysis dataset with the variables gender, age, attitude, deep, stra, surf and points 
-#by combining questions in the learning2014 data,
+#by combining questions in the learning2014 data.
 
 collumns <- c("gender", "Age", "Attitude", "Points")
 
@@ -31,15 +31,17 @@ surf_collumns = unlist(str_split(c("SU02+SU10+SU18+SU26+SU05+SU13+SU21+SU29+SU08
 #deep = d_sm+d_ri+d_ue = D03+D11+D19+D27 + D07+D14+D22+D30 + D06+D15+D23+D31
 deep_collumns = unlist(str_split(c("D03+D11+D19+D27+D07+D14+D22+D30+D06+D15+D23+D31"), "\\+"))
 
-# creating scaled variables 
+# creating scaled variables using rowMeans-function.
 
 analysis_dataset["stra"] = rowMeans(select(data, one_of(stra_collumns)))
 analysis_dataset["deep"] = rowMeans(select(data, one_of(deep_collumns)))
 analysis_dataset["surf"] = rowMeans(select(data, one_of(surf_collumns)))
 
-# filter out rows where Points variable = 0
+# filtering out rows where Points variable = 0
 analysis_dataset = analysis_dataset[analysis_dataset$Points != 0,]
 dim(analysis_dataset)
+
+#as in the exercise provided the file has 166 observations and 7 variables
 
 ###Data analysis
 
@@ -51,39 +53,39 @@ library("Hmisc")
 library("corrplot")
 library(ggplot2)
 
-#Gender
+#Gender correlation
 gender_graph <- ggplot(data.frame(analysis_dataset), aes(x = gender)) +
   geom_bar(fill = "lightgreen")
 print(gender_graph)
 
-#Points
+#Points correlation
 points_dist <- ggplot(data.frame(analysis_dataset), aes(x =Points)) +
   geom_density(fill = "lightgreen")
 print(points_dist)
 
-#Age
+#Age correlation
 age_dist <- points_dist <- ggplot(data.frame(analysis_dataset), aes(x = Age)) +
   geom_density(fill = "lightgreen")
 print(points_dist)
 
-#deep
+#deep correlation
 deep_dist <- ggplot(data.frame(analysis_dataset), aes(x = deep)) +
   geom_density(fill = "lightgreen")
 print(deep_dist)
 
-#surf
+#surf correlation
 surf_dist <- ggplot(data.frame(analysis_dataset), aes(x = surf)) +
   geom_density(fill = "lightgreen")
 print(surf_dist)
 
-#stra
+#stra correlation
 stra_dist <- ggplot(data.frame(analysis_dataset), aes(x = stra)) +
   geom_density(fill = "lightgreen")
 print(stra_dist)
 
 
 
-#Correlation graph of variables:"Attitude","deep","stra","surf","Points" using Pearson
+#Creating a correlation graph of variables:"Attitude","deep","stra","surf","Points" using Pearson
 correlations = c("Attitude","deep","stra","surf","Points")
 analysis_cor = cor(analysis_dataset[correlations])
 corrplot(analysis_cor)
@@ -91,7 +93,7 @@ corrplot(analysis_cor)
 
 plot(analysis_dataset)
 
-# By having a look at the correlation analysis we can identify the factors with the highest correspondance
+# By having a look at the correlation analysis we can identify the factors with the highest correspondance. Those will be further explained below.
 
 
 ##Attitude vs Points
