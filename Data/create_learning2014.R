@@ -15,7 +15,7 @@ url<-"http://www.helsinki.fi/~kvehkala/JYTmooc/JYTOPKYS3-data.txt"
 data=read_tsv(url)
 view(data)
 
-#Creating an analysis dataset with the variables gender, age, attitude, deep, stra, surf and points 
+#Creating an analysis_dataset with the variables gender, age, attitude, deep, stra, surf and points 
 #by combining questions in the learning2014 data.
 
 collumns <- c("gender", "Age", "Attitude", "Points")
@@ -42,6 +42,18 @@ analysis_dataset = analysis_dataset[analysis_dataset$Points != 0,]
 dim(analysis_dataset)
 
 #as in the exercise provided the file has 166 observations and 7 variables
+
+#Saving the analysis_dataset as a csv-file
+
+install.packages("tidyverse")
+library(readr)
+write_csv(analysis_dataset, "data/learning2014.csv")
+
+#Showing how to read the csv-file
+
+loaded_data <- read_csv("data/learning2014.csv")
+str(loaded_data)
+head(loaded_data)
 
 ###Data analysis
 
