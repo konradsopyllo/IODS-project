@@ -180,7 +180,7 @@ model <- lm(analysis_dataset$Points~analysis_dataset$Attitude)
 summary(model)
 ```
 
-#p-value being lowest in this correlation graph
+#p-value being lowest in this correlation graph.
 
 # Other way of doing the same thing
 ```{r}
@@ -218,6 +218,7 @@ model <- lm(analysis_dataset$surf~analysis_dataset$Attitude)
 summary(model)
 ```
 #p-value being third lowest in this comparison.
+The abovementioned three statistical models (Attitude vs surf, surf vs deep, Attitude vs Points) show a rather significant coefficient. In the linear model especially Attitude (predictor variable) vs Points (response variable) have a statistically strong correlation.
 
 #Creating a multiple variable model 
 ```{r}
@@ -229,8 +230,10 @@ my_model2 <- lm(Points ~ Attitude + stra, data = analysis_dataset)
 summary(my_model2)
 
 my_model2 <- lm(Points ~ Attitude + stra, data = analysis_dataset)
+
+
 ```
-# Linear model with multiple variables
+# Linear model with multiple variables 
 ```{r}
 lm(my_model2)
 
@@ -271,7 +274,7 @@ print(new_data)
 
 ```
 
-##Predictions
+##Predicting exam points based on the model created above.
 ```{r}
 predictions <- predict(m, newdata = new_data)
 print(predictions)
