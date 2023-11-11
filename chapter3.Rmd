@@ -1,0 +1,13 @@
+Konrad Sopyllo
+
+##Assignment 3
+
+```{r}
+url <- "https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv"
+alc_data <- read.csv(url)
+
+variable_names <- names(alc_data)
+cat("Variable Names:", paste(variable_names, collapse = ", "), "\n\n")
+```
+
+
