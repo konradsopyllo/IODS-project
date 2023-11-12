@@ -1,13 +1,206 @@
 Konrad Sopyllo
 
-##Assignment 3
+##Assignment 3 
 
+
+The data presented below concers student performance in Portugese high school education.  It focuses mainly onperformance in two distinct subjects: Mathematics (mat) and Portuguese language (por). The data was collected by Cortez and Silva in 2008.
 ```{r}
 url <- "https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/alc.csv"
 alc_data <- read.csv(url)
 
 variable_names <- names(alc_data)
 cat("Variable Names:", paste(variable_names, collapse = ", "), "\n\n")
+
+```
+In this section we will choose four random factors and analyse their correlation with alcohol consumption. First we will make a hypothesis on the result and then calculate it. In addition we will interpret coefficients of the models and their odds ratios
+
+#Hypothesis 1. Romantic relationship is correlated with higher alcohol use.
+
+```{r}
+library(tidyverse)
+gathered_data <- alc_data %>%
+  gather(key = "variable", value = "alcohol_consumption", Dalc, Walc)
+
+ggplot(gathered_data, aes(x = romantic, fill = variable, y = alcohol_consumption)) +
+  geom_bar(position = "dodge", stat = "summary", fun = "mean", color = "black", alpha = 0.7) +
+  labs(title = "Average Alcohol Consumption vs Romantic relationship",
+       x = "romantic",
+       y = "Average Alcohol Consumption") +
+  scale_fill_manual(values = c("red", "green"), name = "Alcohol Consumption",
+                    labels = c("Workday", "Weekend")) +
+  theme_minimal()
+
+logistic_model <- glm(high_use ~ Dalc + Walc + romantic, 
+                      data = alc_data, 
+                      family = binomial)
+
+summary(logistic_model)
+
+odds_ratios <- exp(coef(logistic_model))
+conf_intervals <- exp(confint(logistic_model))
+
+cat("\nOdds Ratios and 95% Confidence Intervals:\n")
+data.frame(Odds_Ratio = odds_ratios, 
+           Lower_CI = conf_intervals[, 1], 
+           Upper_CI = conf_intervals[, 2])
+
+```
+Romantic relationship decreases the chances of high alcohol use. The odds ratio is 0.8 which means that the chances are smaller when in romantic realtionship. 
+
+#Hypothesis 2. more activities is related to higher alcohol use. 
+```{r}
+gathered_data <- alc_data %>%
+  gather(key = "variable", value = "alcohol_consumption", Dalc, Walc)
+
+ggplot(gathered_data, aes(x = activities, fill = variable, y = alcohol_consumption)) +
+  geom_bar(position = "dodge", stat = "summary", fun = "mean", color = "black", alpha = 0.7) +
+  labs(title = "Average Alcohol Consumption vs Activities",
+       x = "Activities",
+       y = "Average Alcohol Consumption") +
+  scale_fill_manual(values = c("red", "green"), name = "Alcohol Consumption",
+                    labels = c("Workday", "Weekend")) +
+  theme_minimal()
+
+#regression analysis
+
+logistic_model <- glm(high_use ~ Dalc + Walc + activities, 
+                      data = alc_data, 
+                      family = binomial)
+
+summary(logistic_model)
+
+odds_ratios <- exp(coef(logistic_model))
+conf_intervals <- exp(confint(logistic_model))
+
+cat("\nOdds Ratios and 95% Confidence Intervals:\n")
+data.frame(Odds_Ratio = odds_ratios, 
+           Lower_CI = conf_intervals[, 1], 
+           Upper_CI = conf_intervals[, 2])
+
+logistic_model <- glm(high_use ~ Dalc + Walc + goout, 
+                      data = alc_data, 
+                      family = binomial)
+
+summary(logistic_model)
+
+odds_ratios <- exp(coef(logistic_model))
+conf_intervals <- exp(confint(logistic_model))
+
+cat("\nOdds Ratios and 95% Confidence Intervals:\n")
+data.frame(Odds_Ratio = odds_ratios, 
+           Lower_CI = conf_intervals[, 1], 
+           Upper_CI = conf_intervals[, 2])
+```
+Extracurricular activities decrease alchol consumption.
+-p-value is low thus the result is significant. 
+
+
+#Hypothesis 3. Amount of going out is correlated with higher alcohol use
+
+```{r}
+gathered_data <- alc_data %>%
+  gather(key = "variable", value = "alcohol_consumption", Dalc, Walc)
+
+ggplot(gathered_data, aes(x = goout, fill = variable, y = alcohol_consumption)) +
+  geom_bar(position = "dodge", stat = "summary", fun = "mean", color = "black", alpha = 0.7) +
+  labs(title = "Average Alcohol Consumption vs Going out",
+       x = "Going out",
+       y = "Average Alcohol Consumption") +
+  scale_fill_manual(values = c("red", "green"), name = "Alcohol Consumption",
+                    labels = c("Workday", "Weekend")) +
+  theme_minimal()
+
+logistic_model <- glm(high_use ~ Dalc + Walc + goout, 
+                      data = alc_data, 
+                      family = binomial)
+
+summary(logistic_model)
+
+odds_ratios <- exp(coef(logistic_model))
+conf_intervals <- exp(confint(logistic_model))
+
+cat("\nOdds Ratios and 95% Confidence Intervals:\n")
+data.frame(Odds_Ratio = odds_ratios, 
+           Lower_CI = conf_intervals[, 1], 
+           Upper_CI = conf_intervals[, 2])
+
+```
+The more you go out, the more you drink alcohol. 
+-Given the p-valuen (0.02) the results are statistically significant. 
+-One unit increase in going out, alcohol consumption increases by 1.3
+
+
+#Hypothesis 4. increased internet usage is correlated with smaller alcohol consumption.
+
+```{r}
+gathered_data <- alc_data %>%
+  gather(key = "variable", value = "alcohol_consumption", Dalc, Walc)
+
+ggplot(gathered_data, aes(x = internet, fill = variable, y = alcohol_consumption)) +
+  geom_bar(position = "dodge", stat = "summary", fun = "mean", color = "black", alpha = 0.7) +
+  labs(title = "Average Alcohol Consumption vs Internet Use",
+       x = "Internet Use",
+       y = "Average Alcohol Consumption") +
+  scale_fill_manual(values = c("red", "green"), name = "Alcohol Consumption",
+                    labels = c("Workday", "Weekend")) +
+  theme_minimal()
+
+logistic_model <- glm(high_use ~ Dalc + Walc + internet, 
+                      data = alc_data, 
+                      family = binomial)
+
+summary(logistic_model)
+
+odds_ratios <- exp(coef(logistic_model))
+conf_intervals <- exp(confint(logistic_model))
+
+cat("\nOdds Ratios and 95% Confidence Intervals:\n")
+data.frame(Odds_Ratio = odds_ratios, 
+           Lower_CI = conf_intervals[, 1], 
+           Upper_CI = conf_intervals[, 2])
+
+
+```
+Internet use is increased during alcohol consumption. Thus the assumption is false.
+-Given the p-valuen (0.02) the results are statistically significant. 
+-One unit increase in internet usage, alcohol consumption increases by 1.2
+
+
+#In the last section we do a prediction power model vs simple guessing of the results. 
+```{r}
+predictions <- predict(logistic_model, type = "response") > 0.5
+
+conf_matrix <- table(Actual = alc_data$high_use, Predicted = predictions)
+
+print(conf_matrix)
+
+training_error <- sum(alc_data$high_use != predictions) / nrow(alc_data)
+cat("\nTraining Error:", training_error, "\n")
+
+library(ggplot2)
+ggplot(alc_data, aes(x = as.factor(high_use), fill = as.factor(predictions))) +
+  geom_bar(position = "dodge") +
+  labs(title = "Actual vs. Predicted Values",
+       x = "Actual Values",
+       y = "Count",
+       fill = "Predicted Values") +
+  theme_minimal()
+
+training_error <- sum(alc_data$high_use != predictions) / nrow(alc_data)
+cat("\nTraining Error:", training_error, "\n")
+
+majority_class <- as.numeric(names(sort(table(alc_data$high_use), decreasing = TRUE)[1]))
+simple_guess_predictions <- rep(majority_class, nrow(alc_data))
+
+
+model_accuracy <- sum(alc_data$high_use == predictions) / nrow(alc_data)
+
+
+simple_guess_accuracy <- sum(alc_data$high_use == simple_guess_predictions) / nrow(alc_data)
+
+cat("Model Accuracy:", model_accuracy, "\n")
+cat("Simple Guessing Accuracy:", simple_guess_accuracy, "\n")
+
 ```
 
-
+The model has 100% succes rate and no false results. There are also 0 incorrectly typed individuals. 
