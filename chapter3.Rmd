@@ -203,4 +203,38 @@ cat("Simple Guessing Accuracy:", simple_guess_accuracy, "\n")
 
 ```
 
-The model has 100% succes rate and no false results. There are also 0 incorrectly typed individuals. 
+The model has 100% success rate and no false results. There are also 0 incorrectly typed individuals. 
+
+#Bonus I
+
+```{r}
+install.packages("caret")
+library(caret)
+
+alc_data$high_use <- as.factor(alc_data$high_use)
+
+set.seed(123)
+
+ctrl <- trainControl(method = "cv", number = 10)
+
+cv_model <- train(high_use ~ Dalc + Walc + romantic, data = alc_data, method = "glm", family = binomial, trControl = ctrl)
+
+print(cv_model)
+
+previous_model_error <- 0.26  
+
+cv_model_error <- 1 - cv_model$results$Accuracy
+
+cat("\nPrevious Model Error:", previous_model_error, "\n")
+cat("Cross-Validation Model Error:", mean(cv_model_error), "\n")
+
+```
+
+Bonus I: Performing a 10 fold cross validation and checking the test performance. 
+
+In the first section, the coding contains creation of the training control. Since both accuracy and Kappa are 1, this means the model has a perfect classification and agreement of outome respectively. It also performs better than the prevous model, since the error is 0.
+
+#Bonus II
+```{r}
+
+```
