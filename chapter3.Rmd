@@ -214,7 +214,6 @@ The model has 100% success rate and no false results. There are also 0 incorrect
 #Bonus I
 
 ```{r}
-install.packages("caret")
 library(caret)
 
 alc_data$high_use <- as.factor(alc_data$high_use)
@@ -241,6 +240,4 @@ Bonus I: Performing a 10 fold cross validation and checking the test performance
 In the first section, the coding contains creation of the training control. Since both accuracy and Kappa are 1, this means the model has a perfect classification and agreement of outome respectively. It also performs better than the prevous model, since the error is 0.
 
 #Bonus II
-```{r}
 
-```
