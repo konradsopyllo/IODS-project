@@ -38,7 +38,8 @@ ggplot(gathered_data, aes(x = romantic, fill = variable, y = alcohol_consumption
 
 logistic_model <- glm(high_use ~ Dalc + Walc + romantic, 
                       data = alc_data, 
-                      family = binomial)
+                      family = binomial,
+                      maxit = 1000)
 
 summary(logistic_model)
 
@@ -85,7 +86,8 @@ data.frame(Odds_Ratio = odds_ratios,
 
 logistic_model <- glm(high_use ~ Dalc + Walc + goout, 
                       data = alc_data, 
-                      family = binomial)
+                      family = binomial,
+                      maxit = 1000)
 
 summary(logistic_model)
 
@@ -118,7 +120,8 @@ ggplot(gathered_data, aes(x = goout, fill = variable, y = alcohol_consumption)) 
 
 logistic_model <- glm(high_use ~ Dalc + Walc + goout, 
                       data = alc_data, 
-                      family = binomial)
+                      family = binomial,
+                      maxit = 1000)
 
 summary(logistic_model)
 
@@ -153,7 +156,8 @@ ggplot(gathered_data, aes(x = internet, fill = variable, y = alcohol_consumption
 
 logistic_model <- glm(high_use ~ Dalc + Walc + internet, 
                       data = alc_data, 
-                      family = binomial)
+                      family = binomial,
+                      maxit = 1000)
 
 summary(logistic_model)
 
