@@ -3,10 +3,10 @@ output:
   html_document: default
   pdf_document: default
 ---
+# Assignment 3 
 
 Konrad Sopyllo
 
-##Assignment 3 
 
 
 The data presented below concers student performance in Portugese high school education.  It focuses mainly onperformance in two distinct subjects: Mathematics (mat) and Portuguese language (por). The data was collected by Cortez and Silva in 2008.
