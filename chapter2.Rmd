@@ -280,6 +280,5 @@ predictions <- predict(m, newdata = new_data)
 print(predictions)
 ```
 
-```
 
 Here we go again...
