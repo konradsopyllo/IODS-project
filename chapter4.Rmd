@@ -21,7 +21,7 @@ Showing a graphical overview of the data and correlations. It is used to predict
 par(mar = c(2, 2, 1, 1))
 par(mfrow = c(4, 4))
 for (i in 1:14) {
-  plot(Boston[, i], main = names(Boston)[i], col = "green", pch = 20)
+  plot(Boston[, i], main = names(Boston)[i], col = "lightblue", pch = 20)
 }
 par(mfrow = c(1, 1))
 par(mar = c(5, 4, 4, 2) + 0.1) 
@@ -154,5 +154,4 @@ As we can see in the graph above the cluster 1 is certainly more detached than t
 ##Bonus II
 
 ```{r}
-
 ```
