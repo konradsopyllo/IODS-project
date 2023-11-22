@@ -4,7 +4,7 @@ output:
   pdf_document: default
 ---
 
-##Assignment 4
+###Assignment 4
 
 Konrad Sopyllo
 
@@ -84,3 +84,75 @@ cat("Overall Accuracy:", round(accuracy, 4), "\n")
 ```
 The plot above consists of tru positive, true negative, false positive and false negative values. Hence numbers 1-4. Within the plot we can se instances fitting these categories. The overall accuracy is (TP+TN)/Total. In this case the overall accuracy is 65% whis is not great. 
 
+#K-means algorithm
+
+```{r}
+data(Boston)
+
+scaled_data <- scale(Boston)
+
+distances <- dist(scaled_data)
+
+set.seed(123)
+k_values <- 2:10
+kmeans_results <- lapply(k_values, function(k) kmeans(scaled_data, centers = k))
+
+wss <- sapply(kmeans_results, function(km) sum(km$withinss))
+plot(k_values, wss, type = "b", pch = 19, frame = FALSE, 
+     xlab = "Number of Clusters (k)", ylab = "Within-Cluster Sum of Squares (WSS)",
+     main = "Elbow Method for Optimal k")
+
+optimal_k <- k_values[which.min(wss)]
+optimal_kmeans <- kmeans(scaled_data, centers = optimal_k)
+
+pairs(scaled_data, col = optimal_kmeans$cluster)
+
+install.packages("factoextra")
+library(factoextra)
+
+scaled_data_df <- as.data.frame(scaled_data)
+
+pairs(scaled_data_df, col = optimal_kmeans$cluster)
+
+fviz_cluster(optimal_kmeans, data = scaled_data_df, geom = "point",
+             ggtheme = theme_minimal(), ellipse.type = "convex", ellipse.level = 0.68)
+```
+First the variables in Boston dataset are being standardized. In order to alculate the distances between the observations based on the standardized variables we use dist(). 
+The elbow method is used to identify the optimal number of clusters by using the within-cluster sum of squares (WSS).
+Then k-means algorithm is run again with the optimal number of clusters. 
+For better visualisation the data is presented above in the graphs. 
+As shown in the first graph, 10 is good number for the amount of clusters. In the cluster plot on the other hand we can see some clusters being more distant from another. In general the seem to overlap with neighbouring ones. 
+
+
+# Bonus I
+-Performing a k-means on the original data with >2 clusters. 
+```{r}
+library(MASS)
+library(cluster)
+
+data(Boston)
+
+scaled_data <- scale(Boston)
+
+set.seed(123)
+num_clusters <- 3
+kmeans_results <- kmeans(scaled_data, centers = num_clusters)
+
+lda_model <- lda(factor(kmeans_results$cluster) ~ ., data = Boston)
+
+lda_scores <- predict(lda_model)$x
+
+plot(lda_scores[, 1], lda_scores[, 2], col = as.factor(kmeans_results$cluster), pch = 16,
+     main = "LDA Biplot-Like Visualization", xlab = "LD1", ylab = "LD2")
+
+points(lda_model$means[, 1], lda_model$means[, 2], col = 1:num_clusters, pch = 3, cex = 2)
+legend("topright", legend = 1:num_clusters, col = 1:num_clusters, pch = 3, title = "Clusters")
+```
+
+As we can see in the graph above the cluster 1 is certainly more detached than the others. Cluster 2 and 3 are more or less grouped together but there is still a rather strong separation visible at LD2 arounf point 0. 
+
+##Bonus II
+
+```{r}
+
+```
