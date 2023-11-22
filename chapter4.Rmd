@@ -1,5 +1,78 @@
 #Assignment 4
 
+The dataset used for this weeks assignment describes the housing values in Suburbs of Boston. The set is shown below. The meaning of the factors are as follows:crim = per capita crime rate by town, zn = proportion of residential land zoned for lots over 25,000 sq.ft., indus = proportion of non-retail business acres per town, chas = Charles River dummy variable (= 1 if tract bounds river; 0 otherwise), nox = nitrogen oxides concentration (parts per 10 million), rm = average number of rooms per dwelling, age = proportion of owner-occupied units built prior to 1940, dis = weighted mean of distances to five Boston employment centres, rad = index of accessibility to radial highways, tax = full-value property-tax rate per $10,000, ptratio = pupil-teacher ratio by town, black = 1000(Bk−0.63)^2 where Bk is the proportion of blacks by town, lstat = lower status of the population (percent), medv = median value of owner-occupied homes in $1000s
+```{r}
+library(MASS)
+
+data(Boston)
+str(Boston)
+dim(Boston)
+```
+Showing a graphical overview of the data and correlations. It is used to predict the value of owner-occupied homes.
+```{r}
+par(mar = c(2, 2, 1, 1))
+par(mfrow = c(4, 4))
+for (i in 1:14) {
+  plot(Boston[, i], main = names(Boston)[i], col = "green", pch = 20)
+}
+par(mfrow = c(1, 1))
+par(mar = c(5, 4, 4, 2) + 0.1) 
+```
+# standardizing the data set and creating a training set.
+```{r}
+scaled_data <- as.data.frame(scale(Boston))
+
+summary(scaled_data)
+
+scaled_data$crime_category <- cut(scaled_data$crim, breaks = quantile(scaled_data$crim), labels = FALSE)
+
+scaled_data <- scaled_data[, -which(colnames(scaled_data) == "crim")]
+
+set.seed(123)
+
+train_indices <- sample(1:nrow(scaled_data), 0.8 * nrow(scaled_data))
+train_set <- scaled_data[train_indices, ]
+test_set <- scaled_data[-train_indices, ]
+```
+Mean of each variable is now close to 0 and standard deviation is close to 1. 
+
+Linear discriminant analysis
 ```{r}
 
+library(ggplot2)
+
+lda_model <- lda(crime_category ~ ., data = train_set)
+
+lda_data <- data.frame(predict(lda_model, train_set)$x, crime_category = train_set$crime_category)
+
+ggplot(lda_data, aes(x = LD1, y = LD2, color = crime_category)) +
+  geom_point() +
+  ggtitle("LDA Biplot") +
+  xlab("LD1") +
+  ylab("LD2") +
+  theme_minimal()
 ```
+
+In the plot shown above the x and y axes represent the linear discriminant functions. They are linear combinations of the original variables.  
+LD1: the first linear discriminant function maximizes the separation between different categories
+LD2:The second linear discriminant function, which is orthogonal to the former, captures additional variation not explained by the LD1. 
+In the plot we can crealy see that the higher crime categories (mainly 4) are separated from the rest. This means less violent crimes can be separated from the rest. 
+
+#Predicting classes with he LDA model
+
+```{r}
+actual_crime_categories <- test_set$crime_category
+
+test_set <- test_set[, -which(colnames(test_set) == "crime_category")]
+
+predicted_classes <- predict(lda_model, newdata = test_set)$class
+
+confusion_matrix <- table(actual = actual_crime_categories, predicted = predicted_classes)
+
+print(confusion_matrix)
+
+accuracy <- sum(diag(confusion_matrix)) / sum(confusion_matrix)
+cat("Overall Accuracy:", round(accuracy, 4), "\n")
+```
+The plot above consists of tru positive, true negative, false positive and false negative values. Hence numbers 1-4. Within the plot we can se instances fitting these categories. The overall accuracy is (TP+TN)/Total. In this case the overall accuracy is 65% whis is not great. 
+
