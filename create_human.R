@@ -71,3 +71,41 @@ human <- inner_join(hd, gii, by = "Country")
 head(human)
 #saving the data
 write_csv(human, "data/human.csv")
+
+#Assignment 5 continuation
+
+
+# Excluding unneeded variables from the file above. 
+
+library(readr)
+human <- read_csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/human1.csv")
+
+library(dplyr)
+
+
+# Select only the wanted columns
+human <- human %>%
+  select(
+    Country, Edu2.FM, Labo.FM, Edu.Exp, Life.Exp, GNI, Mat.Mor, Ado.Birth, Parli.F
+  )
+
+head(human)
+
+# exctracting missing values
+
+human <- na.omit(human)
+
+#new data
+head(human)
+
+
+#excracting region
+human <- human %>%
+  filter(!grepl("Region", Country, ignore.case = TRUE))
+
+head(human)
+
+ncol(human)
+nrow(human)
+
+#there is some issue, the data doesn't contain "Region". 
