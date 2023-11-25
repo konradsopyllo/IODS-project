@@ -1,0 +1,71 @@
+Konrad Sopyllo
+
+
+```{r}
+date()
+
+```
+
+To avoid errors I will use Kimmos ready data. 
+```{r}
+library(readr)
+human <- read_csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/human2.csv")
+
+```
+#Data relations
+```{r}
+rownames(human) <- human$Country
+human$Country <- NULL  
+
+head(human)
+
+library(ggplot2)
+library(dplyr)
+
+subset_vars <- c("Edu2.FM", "Labo.FM", "Edu.Exp", "Life.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F")
+subset_data <- human[, subset_vars]
+
+pairs(subset_data)
+
+summary(subset_data)
+
+```
+
+By looking at the data above we ca see that Expected years of education (Edu.Exp) and life expectancy (Life.Exp) present with aa positive linear trend. It suggests that with the progression of Edu.Exp there is a correlation with Life.Exp. In other words the higher the education level, the higher the life expectancy. 
+No clear assosiation is visible with other variables.
+
+#Principal component analysis
+
+```{r}
+library(ggplot2)
+library(ggrepel)
+
+# Create a biplot using ggplot2
+ggplot(data = as.data.frame(pca_result$ind$coord), aes(x = Dim.1, y = Dim.2)) +
+  geom_point(size = 3) +
+  geom_hline(yintercept = 0, linetype = "dashed", color = "gray") +
+  geom_vline(xintercept = 0, linetype = "dashed", color = "gray") +
+  geom_text_repel(aes(label = rownames(as.data.frame(pca_result$ind$coord))), box.padding = 0.5, max.overlaps = Inf) +
+  labs(title = "PCA Biplot") +
+  theme_minimal()
+
+```
+
+
+```{r}
+human_standardized <- scale(human)
+
+pca_result_standardized <- PCA(human_standardized, graph = FALSE)
+
+plot(pca_result_standardized, choix = 'ind', cex = 0.8, col.hab = as.factor(rownames(human)))
+
+title("PCA Biplot for Standardized Human Data", line = -1, adj = 0.5)
+```
+The biplot shows the relationship between ountries based on on PC1 and PC2. The arrows represent original variables and their correlation. Countries close to each other show similar pattern of variation. 
+
+In the standardized PCA values variables with higher SD are emphasized. 
+Overall standardisation is beneficial and presents with more clear data. 
+
+Variables pointing in the direction of PC1 have a strong influence on its variation.
+Arrow lenght indicates the strength of each variable's contribution. Countries to the left of the axis PC1 have a lower score. 
+On the other hand varbiales pointing in the direction of PC2 have a strong influence on its variation.
