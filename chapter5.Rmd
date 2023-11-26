@@ -37,29 +37,33 @@ No clear assosiation is visible with other variables.
 #Principal component analysis
 
 ```{r}
+
+pca_result <- prcomp(human[, c("Edu2.FM", "Labo.FM", "Edu.Exp", "Life.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F")], scale = TRUE)
+
 library(ggplot2)
 library(ggrepel)
 
-# Create a biplot using ggplot2
-ggplot(data = as.data.frame(pca_result$ind$coord), aes(x = Dim.1, y = Dim.2)) +
+ggplot(data = as.data.frame(pca_result$x), aes(x = PC1, y = PC2)) +
   geom_point(size = 3) +
   geom_hline(yintercept = 0, linetype = "dashed", color = "gray") +
   geom_vline(xintercept = 0, linetype = "dashed", color = "gray") +
-  geom_text_repel(aes(label = rownames(as.data.frame(pca_result$ind$coord))), box.padding = 0.5, max.overlaps = Inf) +
+  geom_text_repel(aes(label = rownames(as.data.frame(pca_result$x))), box.padding = 0.5, max.overlaps = Inf) +
   labs(title = "PCA Biplot") +
   theme_minimal()
-
 ```
 
 
 ```{r}
+options(repos = c(CRAN = "https://cloud.r-project.org"))
+install.packages("FactoMineR")
+library(FactoMineR)
+
 human_standardized <- scale(human)
+
 
 pca_result_standardized <- PCA(human_standardized, graph = FALSE)
 
 plot(pca_result_standardized, choix = 'ind', cex = 0.8, col.hab = as.factor(rownames(human)))
-
-title("PCA Biplot for Standardized Human Data", line = -1, adj = 0.5)
 ```
 The biplot shows the relationship between ountries based on on PC1 and PC2. The arrows represent original variables and their correlation. Countries close to each other show similar pattern of variation. 
 
@@ -69,3 +73,29 @@ Overall standardisation is beneficial and presents with more clear data.
 Variables pointing in the direction of PC1 have a strong influence on its variation.
 Arrow lenght indicates the strength of each variable's contribution. Countries to the left of the axis PC1 have a lower score. 
 On the other hand varbiales pointing in the direction of PC2 have a strong influence on its variation.
+
+```{r}
+install.packages(c("FactoMineR", "factoextra"))
+library(FactoMineR)
+library(factoextra)
+
+tea <- read.csv("https://raw.githubusercontent.com/KimmoVehkalahti/Helsinki-Open-Data-Science/master/datasets/tea.csv", stringsAsFactors = TRUE)
+
+tea_mca_data <- tea[, c("breakfast", "tea.time", "evening", "lunch", "dinner", "always", "home", "work", 
+                        "tearoom", "friends", "resto", "pub", "Tea", "How", "sugar", "how", "where", 
+                        "price", "age", "sex", "SPC", "Sport", "age_Q", "frequency", "escape.exoticism", 
+                        "spirituality", "healthy", "diuretic", "friendliness", "iron.absorption", 
+                        "feminine", "sophisticated", "slimming", "exciting", "relaxing", 
+                        "effect.on.health")]
+
+tea_mca_data[] <- lapply(tea_mca_data, as.factor)
+
+mca_result <- MCA(tea_mca_data)
+
+fviz_mca_biplot(mca_result, col.ind = "cos2", col.ind.sup = "blue", 
+                cex = 0.7, title = "MCA Variable Biplot")
+plot.MCA(mca_result, invisible = "ind", col.ind = "cos2", col.ind.sup = "blue", 
+          cex = 0.5, title = "MCA Variable Biplot")
+```
+
+As shown in the Biplot factors placed closest to each other have the strongest correlation with each other. 
