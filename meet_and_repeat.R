@@ -1,100 +1,35 @@
 
+setwd("/Users/konradsopyllo/Desktop/IODS-project")
+
+library(tidyverse)
+library(usethis)
+install.packages(tidyr)
+library(tidyr)
 library(readr)
-BPRS <- read_csv("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt")
-RATS <- read_csv("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt")
-
-write_csv(BPRS, "data/BPRS.csv")
-write_csv(RATS, "data/RATS.csv")
-
-head(BPRS)
-summary(BPRS)
-str(BPRS)
-names(BPRS)
-dim(BPRS)
-
-head(RATS)
-summary(RATS)
-str(RATS)
-names(RATS)
-dim(RATS)
 
 
-cat("\nSummary of BPRS Variables:\n")
-print(summary(BPRS))
+url <- "https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt"
+rats_wide <- read.table(url, header = TRUE, sep ="\t")
+rats_wide
 
-cat("\nSummary of RATS Variables:\n")
-print(summary(RATS))
+rats_long <- gather(rats_wide, key = "WD", value = "weight", -ID, -Group)
+rats_long$time <- as.numeric(gsub("WD","", rats_long$WD))
 
-categorical_vars_BPRS <- sapply(BPRS, function(x) is.factor(x) | is.character(x))
-BPRS[categorical_vars_BPRS] <- lapply(BPRS[categorical_vars_BPRS], as.factor)
+rats_long$ID <- factor(rats_long$ID)
+rats_long$Group <- factor(rats_long$Group)
+rats_long$WD <- factor(rats_long$WD)
+rats_long
 
-
-categorical_vars_RATS <- sapply(RATS, function(x) is.factor(x) | is.character(x))
-RATS[categorical_vars_RATS] <- lapply(RATS[categorical_vars_RATS], as.factor)
-
-install.packages("tidyr")
-library(tidyr)
-
-install.packages(c("tidyr", "dplyr"))
-library(tidyr)
-library(dplyr)
+write_csv(rats_long, "data/rats.txt")
 
 
-BPRS_long <- BPRS %>%
-  pivot_longer(cols = -c("Subject"), names_to = "Week", values_to = "Value") %>%
-  mutate(Week = as.numeric(gsub("Week", "", Week)))
+bprs_url <- "https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt"
+bprs_wide <- read.table(bprs_url, header = TRUE)
+bprs_wide
 
-RATS_long <- RATS %>%
-  pivot_longer(cols = -c("Subject"), names_to = "Time", values_to = "Value") %>%
-  mutate(Time = as.numeric(gsub("Time", "", Time)))
+bprs_long <- gather(bprs_wide, key = "week", value = "dose", -subject, -treatment)
+bprs_long$week <- as.numeric(gsub("week","", bprs_long$week))
 
+bprs_long
 
-##wide form
-cat("BPRS Wide Form Variable Names:\n")
-print(names(BPRS))
-
-# View the first few rows 
-cat("\nFirst Few Rows of BPRS Wide Form:\n")
-print(head(BPRS))
-
-# Summarizing the variables
-cat("\nSummary of BPRS Wide Form Variables:\n")
-print(summary(BPRS))
-
-# Display variable names
-cat("RATS Wide Form Variable Names:\n")
-print(names(RATS))
-
-# View the first few rows of the data
-cat("\nFirst Few Rows of RATS Wide Form:\n")
-print(head(RATS))
-
-# Summarize the variables
-cat("\nSummary of RATS Wide Form Variables:\n")
-print(summary(RATS))
-
-##long form
-
-cat("BPRS Long Form Variable Names:\n")
-print(names(BPRS_long))
-
-# View the first few rows
-cat("\nFirst Few Rows of BPRS Long Form:\n")
-print(head(BPRS_long))
-
-# Summarizing the variables
-cat("\nSummary of BPRS Long Form Variables:\n")
-print(summary(BPRS_long))
-  
-# Assuming RATS_long is the long form dataset
-# Display variable names
-cat("RATS Long Form Variable Names:\n")
-print(names(RATS_long))
-
-# View the first few rows 
-cat("\nFirst Few Rows of RATS Long Form:\n")
-print(head(RATS_long))
-
-# Summarizing the variables
-cat("\nSummary of RATS Long Form Variables:\n")
-print(summary(RATS_long))
+write_csv(bprs_long, "data/bprs.txt")

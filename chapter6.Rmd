@@ -1,0 +1,30 @@
+
+```{r}
+(date)
+```
+
+```{r}
+
+library(readr)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(MASS)
+library(corrplot)
+library(GGally)
+library(tibble)
+library(FactoMineR)
+library(factoextra)
+library(lme4)
+
+rats <- read.table("data/rats.txt", sep = ",", header = T)
+
+str(rats)
+```
+
+```{r}
+rats$ID <- factor(rats$ID)
+rats$Group <- factor(rats$Group)
+rats$WD <- factor(rats$WD)
+str(rats)
+```
