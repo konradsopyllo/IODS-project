@@ -1,4 +1,10 @@
+---
+output:
+  html_document: default
+  pdf_document: default
+---
 
+###Assignment 6
 ```{r}
 (date)
 ```
@@ -20,11 +26,117 @@ library(lme4)
 rats <- read.table("data/rats.txt", sep = ",", header = T)
 
 str(rats)
+
 ```
 
+Changing the categorical variables ID, Group and WD
 ```{r}
 rats$ID <- factor(rats$ID)
 rats$Group <- factor(rats$Group)
 rats$WD <- factor(rats$WD)
 str(rats)
+
+```
+The data compares three different diet types (groups) and their effect on the rats development ie mass. The weight has been measured over 9 weeks with 11 different time points.
+```{r}
+rats$ID <- factor(rats$ID)
+rats$Group <- factor(rats$Group)
+rats$WD <- factor(rats$WD)
+str(rats)
+
+```
+Weight development over time in different groups
+```{r}
+
+ggplot(rats, aes(x = time, y = weight, linetype=ID, col=Group)) +geom_line() + scale_linetype_manual(values = rep(1:10, times=4)) + theme(legend.position = "none") + scale_y_continuous(limits = c(min(rats$weight), max(rats$weight))) + facet_grid(. ~ Group, labeller = label_both) + xlab("time (days)")
+```
+Plotting values using standardized values. Shows the distribution better in the beginning.
+```{r}
+rats <- rats %>% group_by(time) %>% mutate(stdweight = (weight-mean(weight))/sd(weight)) %>% ungroup()
+
+ggplot(rats, aes(x = time, y = stdweight, linetype=ID, col=Group)) +geom_line() + scale_linetype_manual(values = rep(1:10, times=4)) + theme(legend.position = "none") + facet_grid(. ~ Group, labeller = label_both) + xlab("time (days)") + ylab("scaled weight")
+```
+As we can see the Group 1 has a much lower weight to from the very beginning, it has also some minimal increase throughout the observation period. Groups 2 and 3 have higher weight increase throughout the observation period however 
+
+```{r}
+rats2 <- rats %>% group_by(Group, time) %>% summarise( mean = mean(weight), se = (sd(weight)/sqrt(length(weight)))) %>% ungroup()
+
+#average weight change over the observation period
+ggplot(rats2, aes(x = time, y = mean, linetype = Group, shape = Group, col=Group)) + geom_line() + scale_linetype_manual(values = c(1,2,3)) + geom_point(size=3) + scale_shape_manual(values = c(1,2,3)) + geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3) + scale_y_continuous(name = "mean(weight) +/- se(weight)") + scale_x_continuous(name = "time (days)")
+
+#total change in weight
+rats3 <- rats %>% filter(time > 1) %>% group_by(Group, ID) %>% summarise(mean=mean(weight)) %>% ungroup()
+ggplot(rats3, aes(x = Group, y = mean, col=Group)) + geom_boxplot() + stat_summary(fun = "mean", geom = "point", shape=23, size=2.5, fill = "white") + scale_y_continuous(name = "mean(weight), days 8-64")
+
+rats4 <- subset(rats3, rats3$mean<550)
+
+ggplot(rats4, aes(x = Group, y = mean, col=Group)) + geom_boxplot() + stat_summary(fun = "mean", geom = "point", shape=23, size=2.5, fill = "white") + scale_y_continuous(name = "mean(weight), days 8-64")
+```
+
+Group 1 has the smallest weight. Group 2 has the biggest increase in weight gain. Group 3 have the biggest weight however the gain is not as big as in group 2. 
+
+##T-test to evaluate the group differences and suitability into the linear model
+
+```{r}
+rats5 <- subset(rats4, rats4$Group==1 | rats4$Group==2)
+t.test(mean ~ Group, data = rats5, var.equal=TRUE)
+
+#Group 1 versus Group 2
+```
+
+```{r}
+rats5 <- subset(rats4, rats4$Group==1 | rats4$Group==3)
+t.test(mean ~ Group, data = rats5, var.equal=TRUE)
+
+#Group 1 versus Group 3
+```
+
+```{r}
+rats5 <- subset(rats4, rats4$Group==2 | rats4$Group==3)
+t.test(mean ~ Group, data = rats5, var.equal=TRUE)
+
+#Group 2 versus Group 3
+```
+
+```{r}
+rats5 <- subset(rats4, rats4$Group==2 | rats4$Group==3)
+t.test(mean ~ Group, data = rats5, var.equal=TRUE)
+
+#Group 2 versus Group 3
+```
+
+```{r}
+rats5 <- subset(rats3, rats3$Group==2 | rats4$Group==3)
+t.test(mean ~ Group, data = rats5, var.equal=TRUE)
+
+baseline <- subset(rats, rats$time==1)
+rats5 <- rats3 %>% mutate(baseline = baseline$weight)
+
+fit <- lm(mean ~ baseline + Group, data = rats5)
+
+anova(fit)
+```
+
+Comparing Group 1 to Groups 2 and 3 has small p-values. Hence there is a significant difference in the weight. Comparing groups 2 and 3 shows already a smaller p -value. Moreover removing the outlines increases the p-value even more questioning the correlation.
+
+Based on the Anova analysis it might be good to choose rats with a similar starting weight as that is the strongest predictive value. 
+
+#BPRS
+
+```{r}
+bprs <- read.table("data/bprs.txt", header=T, sep = ",")
+
+str(bprs)
+```
+
+```{r}
+bprs$subject <- 1:40
+
+bprs$treatment <- factor(bprs$treatment)
+bprs$subject <- factor(bprs$subject)
+bprs$week <- factor(bprs$week)
+str(bprs)
+```
+```{r}
+
 ```
