@@ -158,4 +158,49 @@ Now lets create the intercept model
 bprs_ref <- lmer(dose ~ as.numeric(week) + treatment + (1 | subject), data = bprs, REML = FALSE)
 
 summary(bprs_ref)
+```
+A random intercept model to allow for the different terms to show interindividual differences. 
 ```{r}
+bprs_ref1 <- lmer(dose ~ as.numeric(week) + treatment + (week | subject), data = bprs, REML = FALSE)
+
+summary(bprs_ref1)
+```
+
+A random intercept model to allow for the different terms to show interindividual differences. 
+
+```{r}
+bprs_ref2 <- lmer(dose ~ as.numeric(week) + treatment + (week | subject) + (week | treatment), data = bprs, REML = FALSE)
+
+
+summary(bprs_ref2)
+```
+
+Anova analysis of the two models
+```{r}
+anova(bprs_ref, bprs_ref1)
+```
+
+```{r}
+anova(bprs_ref1, bprs_ref2)
+```
+
+```{r}
+ggplot(bprs, aes(x = as.numeric(week), y = dose, linetype = subject, colour = treatment)) +
+  geom_line(alpha = 0.5) +
+  scale_linetype_manual(values = rep(1:10, times = 40), guide = FALSE) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  xlab("Week") +
+  ylab("Dose")
+
+fitted_values <- fitted(bprs_ref1)
+bprs <- mutate(bprs, fitted = fitted_values)
+
+library(ggplot2)
+
+ggplot(bprs, aes(x = as.numeric(week), y = fitted, linetype = subject, colour = treatment)) +
+  geom_line(alpha = 0.5) +
+  scale_linetype_manual(values = rep(1:10, times = 40), guide = FALSE) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  xlab("Week") +
+  ylab("Fitted Values")
+```
