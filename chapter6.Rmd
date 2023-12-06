@@ -122,7 +122,7 @@ Comparing Group 1 to Groups 2 and 3 has small p-values. Hence there is a signifi
 
 Based on the Anova analysis it might be good to choose rats with a similar starting weight as that is the strongest predictive value. 
 
-#BPRS
+#BPRS dataset
 
 ```{r}
 bprs <- read.table("data/bprs.txt", header=T, sep = ",")
@@ -131,13 +131,31 @@ str(bprs)
 ```
 
 ```{r}
-bprs$subject <- 1:40
-
 bprs$treatment <- factor(bprs$treatment)
 bprs$subject <- factor(bprs$subject)
 bprs$week <- factor(bprs$week)
 str(bprs)
 ```
 ```{r}
+ggplot(bprs, aes(x = as.numeric(week), y = dose, linetype = subject, colour = treatment)) +
+  geom_line(alpha = 0.5) +
+  scale_linetype_manual(values = rep(1:10, times = 40), guide = FALSE) +
+  guides(colour = guide_legend(override.aes = list(alpha = 1))) +
+  xlab("Week") + ylab("Dose")
 
 ```
+Based on this graph it is impossible to say about any correlations. 
+
+```{r}
+bprs_lm <- lm(dose ~ as.numeric(week) + treatment, data = bprs)
+
+summary(bprs_lm)
+```
+As seen above time (in weeks) is the only variable strongly associated with the treatment.
+
+Now lets create the intercept model
+```{r}
+bprs_ref <- lmer(dose ~ as.numeric(week) + treatment + (1 | subject), data = bprs, REML = FALSE)
+
+summary(bprs_ref)
+```{r}
