@@ -4,7 +4,7 @@ output:
   pdf_document: default
 ---
 
-###Assignment 6
+# Assignment 6
 ```{r}
 (date)
 ```
