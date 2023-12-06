@@ -1,5 +1,11 @@
-Konrad Sopyllo
 
+---
+output:
+  html_document: default
+  pdf_document: default
+---
+# Assignment 5
+Konrad Sopyllo
 
 ```{r}
 date()

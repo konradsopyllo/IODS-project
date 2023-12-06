@@ -4,7 +4,7 @@ output:
   pdf_document: default
 ---
 
-###Assignment 4
+# Assignment 4
 
 Konrad Sopyllo
 
@@ -26,7 +26,7 @@ for (i in 1:14) {
 par(mfrow = c(1, 1))
 par(mar = c(5, 4, 4, 2) + 0.1) 
 ```
-# standardizing the data set and creating a training set.
+#standardizing the data set and creating a training set.
 ```{r}
 scaled_data <- as.data.frame(scale(Boston))
 
@@ -123,7 +123,7 @@ For better visualisation the data is presented above in the graphs.
 As shown in the first graph, 10 is good number for the amount of clusters. In the cluster plot on the other hand we can see some clusters being more distant from another. In general the seem to overlap with neighbouring ones. 
 
 
-# Bonus I
+#Bonus I
 -Performing a k-means on the original data with >2 clusters. 
 ```{r}
 library(MASS)
@@ -150,6 +150,6 @@ legend("topright", legend = 1:num_clusters, col = 1:num_clusters, pch = 3, title
 
 As we can see in the graph above the cluster 1 is certainly more detached than the others. Cluster 2 and 3 are more or less grouped together but there is still a rather strong separation visible at LD2 arounf point 0. 
 
-##Bonus II
+#Bonus II
 
 

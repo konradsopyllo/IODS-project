@@ -9,7 +9,7 @@ output:
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
 - Assume the reader has no previous knowledge of your data or the more advanced methods you are using.
 
-#Konrad Sopyllo
+Konrad Sopyllo
 
 The data presented below is based on a survey and the data was collected 3.12.2014 - 10.1.2015 in Florence,Italy. The data was translated in Finnish by Kimmo Vehkalahti and Liisa Myyry. The survey was based originally on a finnish study concerning the progress and satisfaction related to the double phased study programme in technical universities. 
 
@@ -64,7 +64,7 @@ deep_collumns = unlist(str_split(c("D03+D11+D19+D27+D07+D14+D22+D30+D06+D15+D23+
 ```
 
 
-# Adding stra, deep and surf by creating scaled variables using rowMeans-function. 
+#Adding stra, deep and surf by creating scaled variables using rowMeans-function. 
 ```{r}
 analysis_dataset["stra"] = rowMeans(select(data, one_of(stra_collumns)))
 analysis_dataset["deep"] = rowMeans(select(data, one_of(deep_collumns)))
@@ -72,7 +72,7 @@ analysis_dataset["surf"] = rowMeans(select(data, one_of(surf_collumns)))
 ```
 
 
-# filtering out rows where Points variable = 0
+#filtering out rows where Points variable = 0
 ```{r}
 analysis_dataset = analysis_dataset[analysis_dataset$Points != 0,]
 dim(analysis_dataset)
@@ -97,7 +97,7 @@ str(loaded_data)
 head(loaded_data)
 ```
 
-###Data analysis
+##Data analysis
 
 In this section we will focus further on analysing the data itself. The brief description of the contents of the data have been presented in the beginning of the file. 
 
@@ -164,7 +164,7 @@ plot(analysis_dataset)
 
 ```
 
-# By having a look at the correlation analysis we can identify the factors with the highest correspondance. Those will be further explained below.
+#By having a look at the correlation analysis we can identify the factors with the highest correspondance. Those will be further explained below.
 
 
 ##Attitude vs Points
@@ -182,7 +182,7 @@ summary(model)
 
 #p-value being lowest in this correlation graph.
 
-# Other way of doing the same thing
+#Other way of doing the same thing
 ```{r}
 
 library(ggplot2)
@@ -191,7 +191,7 @@ my_model <- lm(Points ~ Attitude, data = analysis_dataset)
 
 ```
 
-##surf vs deep 
+#surf vs deep 
 
 ```{r}
 p1 <- ggplot(data.frame(analysis_dataset), aes(x = deep, y = surf))
@@ -204,9 +204,9 @@ model <- lm(analysis_dataset$surf~analysis_dataset$deep)
 summary(model)
 
 ```
-# p-value being second lowest in this comparison
+#p-value being second lowest in this comparison
 
-##Attitude vs surf
+#Attitude vs surf
 ```{r}
 p1 <- ggplot(data.frame(analysis_dataset), aes(x = Attitude, y = surf))
 p2 <- p1 + geom_point()
@@ -233,21 +233,21 @@ my_model2 <- lm(Points ~ Attitude + stra, data = analysis_dataset)
 
 
 ```
-# Linear model with multiple variables 
+#Linear model with multiple variables 
 ```{r}
 lm(my_model2)
 
 par(mfrow = c(2, 2))
 ```
-# Residuals vs Fitted values (which = 1)
+#Residuals vs Fitted values (which = 1)
 ```{r}
 plot(my_model2, which = 1)
 ```
-# Normal QQ-plot (which = 2)
+#Normal QQ-plot (which = 2)
 ```{r}
 plot(my_model2, which = 2)
 ```
-# Residuals vs Leverage (which = 5)
+#Residuals vs Leverage (which = 5)
 ```{r}
 plot(my_model2, which = 5)
 ```
@@ -274,7 +274,7 @@ print(new_data)
 
 ```
 
-##Predicting exam points based on the model created above.
+#Predicting exam points based on the model created above.
 ```{r}
 predictions <- predict(m, newdata = new_data)
 print(predictions)
